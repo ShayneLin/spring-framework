@@ -32,7 +32,7 @@ import org.springframework.lang.Nullable;
  * @author Rob Harrop
  * @since 2.0
  */
-public final class ParseState {
+public final class  ParseState {
 
 	/**
 	 * Tab character used when rendering the tree-style representation.

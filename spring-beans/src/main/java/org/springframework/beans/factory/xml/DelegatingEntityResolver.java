@@ -80,10 +80,13 @@ public class DelegatingEntityResolver implements EntityResolver {
 	@Override
 	@Nullable
 	public InputSource resolveEntity(String publicId, @Nullable String systemId) throws SAXException, IOException {
+		//DelegatingEntityResolver很像个适配器，Delegating的英文是代表的意思
 		if (systemId != null) {
+			//如果systemId是以“.dtd”则是DTD的解析
 			if (systemId.endsWith(DTD_SUFFIX)) {
 				return this.dtdResolver.resolveEntity(publicId, systemId);
 			}
+			//如果systemId是以“.xsd”则是DTD的解析
 			else if (systemId.endsWith(XSD_SUFFIX)) {
 				return this.schemaResolver.resolveEntity(publicId, systemId);
 			}

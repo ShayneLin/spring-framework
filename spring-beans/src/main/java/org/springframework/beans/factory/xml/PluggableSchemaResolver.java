@@ -112,8 +112,10 @@ public class PluggableSchemaResolver implements EntityResolver {
 		}
 
 		if (systemId != null) {
+			// 获得 Resource 所在位置
 			String resourceLocation = getSchemaMappings().get(systemId);
 			if (resourceLocation != null) {
+				// 创建 InputSource 对象，并设置 publicId、systemId 属性
 				Resource resource = new ClassPathResource(resourceLocation, this.classLoader);
 				try {
 					InputSource source = new InputSource(resource.getInputStream());
@@ -139,19 +141,23 @@ public class PluggableSchemaResolver implements EntityResolver {
 	 */
 	private Map<String, String> getSchemaMappings() {
 		Map<String, String> schemaMappings = this.schemaMappings;
+		// 双重检查锁，实现 schemaMappings 单例
 		if (schemaMappings == null) {
 			synchronized (this) {
+				//为什么要有这一句？是否与JVM的指令重排有关？
 				schemaMappings = this.schemaMappings;
 				if (schemaMappings == null) {
 					if (logger.isDebugEnabled()) {
 						logger.debug("Loading schema mappings from [" + this.schemaMappingsLocation + "]");
 					}
 					try {
+						// 以Properties的方式，读取schemaMappingsLocation，PropertiesLoaderUtils可以学习一下
 						Properties mappings =
 								PropertiesLoaderUtils.loadAllProperties(this.schemaMappingsLocation, this.classLoader);
 						if (logger.isDebugEnabled()) {
 							logger.debug("Loaded schema mappings: " + mappings);
 						}
+						// 将 mappings 初始化到 schemaMappings 中
 						Map<String, String> mappingsToUse = new ConcurrentHashMap<>(mappings.size());
 						CollectionUtils.mergePropertiesIntoMap(mappings, mappingsToUse);
 						schemaMappings = mappingsToUse;
