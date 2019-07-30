@@ -873,6 +873,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 
 	@Override
 	public void addBeanPostProcessor(BeanPostProcessor beanPostProcessor) {
+		/*添加实现了后置处理的Bean到beanPostProcessors里面*/
 		Assert.notNull(beanPostProcessor, "BeanPostProcessor must not be null");
 		this.beanPostProcessors.remove(beanPostProcessor);
 		this.beanPostProcessors.add(beanPostProcessor);
