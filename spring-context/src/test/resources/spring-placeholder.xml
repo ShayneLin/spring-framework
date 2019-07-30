@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!--自定义PlaceHodler实现多配置文件切换-->
+	<bean id="PropertyPlaceholderConfigurer" class="com.shayne.test.CustomPropertyConfig">
+		<property name="locations">
+			<list>
+				<value>classpath:config/application-dev.properties</value>
+				<value>classpath:config/application-test.properties</value>
+				<value>classpath:config/application-prod.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!--注入参数-->
+	<bean id="studentService" class="com.shayne.test.StudentService">
+		<property name="name" value="${student.name}"/>
+	</bean>
+</beans>

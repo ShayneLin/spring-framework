@@ -73,16 +73,20 @@ public abstract class PropertyResourceConfigurer extends PropertiesLoaderSupport
 	 * {@linkplain #mergeProperties Merge}, {@linkplain #convertProperties convert} and
 	 * {@linkplain #processProperties process} properties against the given bean factory.
 	 * @throws BeanInitializationException if any properties cannot be loaded
+	 * 	@see org.springframework.beans.factory.config.PropertyPlaceholderConfigurer#processProperties
 	 */
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		try {
+			// <1> 返回合并的 Properties 实例
 			Properties mergedProps = mergeProperties();
 
 			// Convert the merged properties, if necessary.
+			// <2> 转换合并属性
 			convertProperties(mergedProps);
 
 			// Let the subclass process the properties.
+			// <3> 子类处理 该方法由子类实现 PropertyPlaceholderConfigurer
 			processProperties(beanFactory, mergedProps);
 		}
 		catch (IOException ex) {

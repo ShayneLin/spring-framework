@@ -220,8 +220,9 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 	@Override
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties props)
 			throws BeansException {
-
+		// <1> 创建 StringValueResolver 对象
 		StringValueResolver valueResolver = new PlaceholderResolvingStringValueResolver(props);
+		// <2> 处理
 		doProcessProperties(beanFactoryToProcess, valueResolver);
 	}
 
@@ -232,6 +233,8 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 
 		private final PlaceholderResolver resolver;
 
+		/*StringValueResolver 为一个解析 String 类型值的策略接口，
+		该接口提供了 #resolveStringValue(String strVal) 方法，用于解析 String 值。*/
 		public PlaceholderResolvingStringValueResolver(Properties props) {
 			this.helper = new PropertyPlaceholderHelper(
 					placeholderPrefix, placeholderSuffix, valueSeparator, ignoreUnresolvablePlaceholders);
@@ -241,10 +244,13 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 		@Override
 		@Nullable
 		public String resolveStringValue(String strVal) throws BeansException {
+			// 解析真值
+			//构造 helper 实例对象时需要传入了几个参数：placeholderPrefix、placeholderSuffix、valueSeparator 在org.springframework.beans.factory.config.PlaceholderConfigurerSupport里面定义了这些变量
 			String resolved = this.helper.replacePlaceholders(strVal, this.resolver);
 			if (trimValues) {
 				resolved = resolved.trim();
 			}
+			// 返回真值
 			return (resolved.equals(nullValue) ? null : resolved);
 		}
 	}
