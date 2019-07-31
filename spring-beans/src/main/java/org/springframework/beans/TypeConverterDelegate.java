@@ -157,7 +157,12 @@ class TypeConverterDelegate {
 
 		ConversionFailedException conversionAttemptEx = null;
 
+
+		/*核心在这里处理*/
 		// No custom editor but custom ConversionService specified?
+		// GenericConversionService：ConversionService 接口的基础实现，适用于大部分条件下的转换工作，通过 ConfigurableConversionService 接口间接地将 ConverterRegistry 实现为注册 API 。
+		// DefaultConversionService：ConversionService 接口的默认实现，适用于大部分条件下的转换工作。
+		//TypeDescriptors 提供有关发生转换的源位置和目标位置的附加上下文，通常是对象字段或属性位置。
 		ConversionService conversionService = this.propertyEditorRegistry.getConversionService();
 		if (editor == null && conversionService != null && newValue != null && typeDescriptor != null) {
 			TypeDescriptor sourceTypeDesc = TypeDescriptor.forObject(newValue);

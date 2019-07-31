@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	<!--PropertyOverrideConfigurer 允许我们对 Spring 容器中配置的任何我们想处理的 bean 定义的 property 信息进行覆盖替换。-->
+	<!--PropertyOverrideConfigurer实现属性覆盖-->
+	<bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:override.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!--注入参数-->
+	<bean id="student" class="com.shayne.test.StudentService">
+		<property name="name" value="ChuanYe"/>
+	</bean>
+</beans>

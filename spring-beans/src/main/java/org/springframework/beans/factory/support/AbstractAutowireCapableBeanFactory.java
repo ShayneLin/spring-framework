@@ -40,15 +40,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.MutablePropertyValues;
-import org.springframework.beans.PropertyAccessorUtils;
-import org.springframework.beans.PropertyValue;
-import org.springframework.beans.PropertyValues;
-import org.springframework.beans.TypeConverter;
+import org.springframework.beans.*;
 import org.springframework.beans.factory.Aware;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanCreationException;
@@ -1423,7 +1415,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				checkDependencies(beanName, mbd, filteredPds, pvs);
 			}
 		}
-		// <5> 将属性应用到 bean 中
+		// <5> 将属性应用到 bean 中 --> 类型转换体系
 		if (pvs != null) {
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
@@ -1686,6 +1678,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				boolean convertible = bw.isWritableProperty(propertyName) &&
 						!PropertyAccessorUtils.isNestedOrIndexedProperty(propertyName);
 				if (convertible) {
+					/*属性类型转换调用*/
 					convertedValue = convertForProperty(resolvedValue, propertyName, bw, converter);
 				}
 				// Possibly store converted value in merged bean definition,
@@ -1724,17 +1717,24 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	/**
 	 * Convert the given value for the specified target property.
+	 * @see TypeConverterSupport#convertIfNecessary(java.lang.Object, java.lang.Class, org.springframework.core.MethodParameter)
 	 */
 	@Nullable
 	private Object convertForProperty(
 			@Nullable Object value, String propertyName, BeanWrapper bw, TypeConverter converter) {
-
+		// 若 TypeConverter 为 BeanWrapperImpl 类型，则使用 BeanWrapperImpl 来进行类型转换
+		// 这里主要是因为 BeanWrapperImpl 实现了 PropertyEditorRegistry 接口
 		if (converter instanceof BeanWrapperImpl) {
 			return ((BeanWrapperImpl) converter).convertForProperty(value, propertyName);
 		}
 		else {
+			// 获得属性对应的 PropertyDescriptor 对象
 			PropertyDescriptor pd = bw.getPropertyDescriptor(propertyName);
+			// 获得属性对应的 setting MethodParameter 对象
 			MethodParameter methodParam = BeanUtils.getWriteMethodParameter(pd);
+			// 执行转换
+			//TypeConverter 是定义类型转换方法的接口，通常情况下与 PropertyEditorRegistry 配合使用实现类型转换。
+			//TypeConverter实现者有两个：DataBinder 和 TypeConverterSupport 类
 			return converter.convertIfNecessary(value, pd.getPropertyType(), methodParam);
 		}
 	}

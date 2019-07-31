@@ -51,6 +51,8 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 1.1
  */
+/*类 CglibSubclassingInstantiationStrategy 为 Spring 实例化 Bean 的默认实例化策略，
+其主要功能还是对父类功能进行补充：其父类将 CGLIB 的实例化策略委托其实现*/
 public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationStrategy {
 
 	/**
@@ -155,6 +157,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 				ClassLoader cl = ((ConfigurableBeanFactory) this.owner).getBeanClassLoader();
 				enhancer.setStrategy(new ClassLoaderAwareGeneratorStrategy(cl));
 			}
+			//MethodOverrideCallbackFilter 是用来定义 CGLIB 回调过滤方法的拦截器行为
 			enhancer.setCallbackFilter(new MethodOverrideCallbackFilter(beanDefinition));
 			enhancer.setCallbackTypes(CALLBACK_TYPES);
 			return enhancer.createClass();
