@@ -235,10 +235,13 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * @see #ACTIVE_PROFILES_PROPERTY_NAME
 	 */
 	protected Set<String> doGetActiveProfiles() {
+		/*如果 activeProfiles 为空，则进行初始化*/
 		synchronized (this.activeProfiles) {
 			if (this.activeProfiles.isEmpty()) {
+				// 获得 ACTIVE_PROFILES_PROPERTY_NAME 对应的 profiles 属性值
 				String profiles = getProperty(ACTIVE_PROFILES_PROPERTY_NAME);
 				if (StringUtils.hasText(profiles)) {
+					// 设置到 activeProfiles 中,通过“,”区分多个Profile
 					setActiveProfiles(StringUtils.commaDelimitedListToStringArray(
 							StringUtils.trimAllWhitespace(profiles)));
 				}
